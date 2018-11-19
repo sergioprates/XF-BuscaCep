@@ -19,22 +19,10 @@ namespace BuscaCep
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(txtCep.Text))
-                    throw new InvalidOperationException("Informe o CEP.");
+                string resultado = await Clients.ViaCepHttpClient.Current.BuscarCep(txtCep.Text);
 
-                using (var client = new HttpClient())
-                {
-                    using (var response = await client.GetAsync($"http://viacep.com.br/ws/{txtCep.Text}/json"))
-                    {
-                        if (!response.IsSuccessStatusCode)
-                            throw new InvalidOperationException("Erro ao consultar o CEP!");
-
-                        var resultado = await response.Content.ReadAsStringAsync();
-
-                        if (!string.IsNullOrWhiteSpace(resultado))
-                            await DisplayAlert("Vish...", resultado, "OK");
-                    }
-                }
+                if (!string.IsNullOrWhiteSpace(resultado))
+                    await DisplayAlert("Vish...", resultado, "OK");
             }
             catch (Exception ex)
             {

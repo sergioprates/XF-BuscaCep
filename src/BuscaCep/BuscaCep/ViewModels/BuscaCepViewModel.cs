@@ -88,7 +88,6 @@ namespace BuscaCep.ViewModels
         public bool HasCep { get => !string.IsNullOrWhiteSpace(_cep); }
 
         private Command _buscarCommand;
-
         public Command BuscarCommand => _buscarCommand ?? (_buscarCommand = new Command(async () => await BuscarCommandExecute(), ()=> IsNotBusy));
 
         async Task BuscarCommandExecute()

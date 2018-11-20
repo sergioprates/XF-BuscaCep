@@ -12,9 +12,7 @@ namespace BuscaCep.Pages
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class CepsPage : ContentPage
-    {
-        
-
+    {     
         public CepsPage()
         {
             InitializeComponent();

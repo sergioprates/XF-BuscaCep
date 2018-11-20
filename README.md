@@ -7,4 +7,11 @@
 
 ## Objetivo
 
-Praticar um pouco de xamarin para não enferrujar XD
+Praticar um pouco de Xamarin para não enferrujar XD
+
+#Screenshots
+
+![](/Screenshots/screen1.png)
+
+
+![](/Screenshots/screen2.png)

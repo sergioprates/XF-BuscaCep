@@ -11,7 +11,7 @@ Praticar um pouco de Xamarin para não enferrujar XD
 
 #Screenshots
 
-![](/screens/screen1.png)
+![](https://github.com/sergioprates/XF-BuscaCep/blob/master/screens/screen1.PNG?raw=true)
 
 
-![](/screens/screen2.png)
+![](https://github.com/sergioprates/XF-BuscaCep/blob/master/screens/screen2.PNG?raw=true)

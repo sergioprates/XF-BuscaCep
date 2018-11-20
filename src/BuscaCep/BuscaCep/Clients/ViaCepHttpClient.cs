@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
@@ -18,7 +19,7 @@ namespace BuscaCep.Clients
             _httpClient = new HttpClient();
         }
 
-        public async Task<string> BuscarCep(string cep)
+        public async Task<BuscaCepResult> BuscarCep(string cep)
         {
             try
             {
@@ -30,7 +31,12 @@ namespace BuscaCep.Clients
                     if (!response.IsSuccessStatusCode)
                         throw new InvalidOperationException("Erro ao consultar o CEP!");
 
-                    return await response.Content.ReadAsStringAsync();
+                    string resultado = await response.Content.ReadAsStringAsync();
+
+                    if (string.IsNullOrWhiteSpace(resultado))
+                        throw new InvalidOperationException("Retorno vazio");
+
+                    return JsonConvert.DeserializeObject<BuscaCepResult>(resultado);
                 }
             }
             catch (Exception)

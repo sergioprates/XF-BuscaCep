@@ -5,10 +5,14 @@
              x:Class="BuscaCep.MainPage">
 
     <StackLayout>
-        <Entry x:Name="txtCep"
-              Placeholder="Informe o CEP" />
+        <Entry
+              Placeholder="Informe o CEP" Text="{Binding CEP}" />
+        
         <Button x:Name="btnBuscarCep"
                 Text="Buscar" Clicked="BtnBuscarCep_Clicked" />
+
+        <Label Text="{Binding CEP}" />
+
     </StackLayout>
 
 </ContentPage>

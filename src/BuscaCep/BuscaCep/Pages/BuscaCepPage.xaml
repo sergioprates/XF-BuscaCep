@@ -3,13 +3,52 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="BuscaCep.Pages.BuscaCepPage">
     <ContentPage.Content>
-        <StackLayout>
+        <StackLayout Padding="5,0"
+                     Spacing="5">
             <Entry
-              Placeholder="Informe o CEP" Text="{Binding CEP}" />
+              Placeholder="Informe o CEP" Text="{Binding CEPBusca}" />
             <Button
                 Text="Buscar" Command="{Binding BuscarCommand}" />
 
-            <Label Text="{Binding CEP}" />
+            <ActivityIndicator IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}"></ActivityIndicator>
+            <StackLayout Spacing="2" IsVisible="{Binding HasCep}">
+                <Label Text="CEP:" 
+                   FontAttributes="Bold" />
+
+                <Label Text="{Binding CEP}" />
+            </StackLayout>
+
+            <StackLayout Spacing="2" IsVisible="{Binding HasCep}">
+                <Label Text="Logradouro:" 
+                   FontAttributes="Bold" />
+
+                <Label Text="{Binding Logradouro}" 
+                     />
+            </StackLayout>
+
+            <StackLayout Spacing="2" IsVisible="{Binding HasCep}">
+
+                <Label Text="Bairro:" 
+                   FontAttributes="Bold" />
+
+                <Label Text="{Binding Bairro}"
+                    />
+            </StackLayout>
+
+            <StackLayout Spacing="2" IsVisible="{Binding HasCep}">
+
+                <Label Text="Localidade:" 
+                   FontAttributes="Bold" />
+
+                <Label Text="{Binding Localidade}"  />
+            </StackLayout>
+
+            <StackLayout Spacing="2" IsVisible="{Binding HasCep}">
+                <Label Text="UF:" 
+                   FontAttributes="Bold" />
+
+                <Label Text="{Binding UF}" />
+            </StackLayout>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

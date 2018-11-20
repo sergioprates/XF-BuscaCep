@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BuscaCep.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -13,21 +14,17 @@ namespace BuscaCep
         public MainPage()
         {
             InitializeComponent();
+
+            BindingContext = new BuscaCepViewModel();
         }
 
         private async void BtnBuscarCep_Clicked(object sender, EventArgs e)
         {
-            try
+            await Task.Run(() =>
             {
-                string resultado = await Clients.ViaCepHttpClient.Current.BuscarCep(txtCep.Text);
-
-                if (!string.IsNullOrWhiteSpace(resultado))
-                    await DisplayAlert("Vish...", resultado, "OK");
-            }
-            catch (Exception ex)
-            {
-                await DisplayAlert("Alerta!", ex.Message, "OK");
-            }
+                ((BuscaCepViewModel)BindingContext).BuscarCommand.Execute(null);
+            });
+            
         }
     }
 }

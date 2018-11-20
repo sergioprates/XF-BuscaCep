@@ -17,10 +17,7 @@ namespace BuscaCep.Pages
         {
             InitializeComponent();
 
-            BindingContext = new BuscaCepViewModel()
-            {
-                CEP = "06807470"
-            };
+            BindingContext = new BuscaCepViewModel();
         }
     }
 }

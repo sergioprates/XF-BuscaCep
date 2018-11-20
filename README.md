@@ -4,6 +4,7 @@
 
 * Xamarin Forms 3.4
 * Visual Studio 2017
+* SQLite (sql-net-pcl 1.5)
 
 ## Objetivo
 

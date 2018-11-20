@@ -98,8 +98,8 @@ namespace BuscaCep.ViewModels
                 if (IsBusy)
                     return;
 
-                IsBusy = true;
-                BuscarCommand.ChangeCanExecute();
+                this.TratarCommandCanExecute(BuscarCommand, true);
+                this.TratarCommandCanExecute(AdicionarCommand, true);
 
                 BuscaCepResult consulta = await Clients.ViaCepHttpClient.Current.BuscarCep(_cepBusca);
 
@@ -111,9 +111,15 @@ namespace BuscaCep.ViewModels
             }
             finally
             {
-                IsBusy = false;
-                BuscarCommand.ChangeCanExecute();
+                this.TratarCommandCanExecute(BuscarCommand, false);
+                this.TratarCommandCanExecute(AdicionarCommand, false);
             }
+        }
+
+        private void TratarCommandCanExecute(Command command, bool isBusy)
+        {
+            IsBusy = isBusy;
+            command.ChangeCanExecute();
         }
 
         private void AtribuirValores(BuscaCepResult consulta)
@@ -129,7 +135,35 @@ namespace BuscaCep.ViewModels
             }
 
             OnPropertyChanged(nameof(HasCep));
+        }
 
+        private Command _adicionarCommand;
+
+        public Command AdicionarCommand => _adicionarCommand ?? (_adicionarCommand = new Command(async () => await AdicionarCommandExecute(), () => IsNotBusy));
+
+        async Task AdicionarCommandExecute()
+        {
+            try
+            {
+                if (IsBusy)
+                    return;
+
+                this.TratarCommandCanExecute(AdicionarCommand, true);
+                this.TratarCommandCanExecute(BuscarCommand, true);
+
+                MessagingCenter.Send(this, "ADICIONAR CEP");
+
+                await base.PopAsync();
+            }
+            catch (Exception ex)
+            {
+                await App.Current.MainPage.DisplayAlert("Alerta!", ex.Message, "OK");
+            }
+            finally
+            {
+                this.TratarCommandCanExecute(AdicionarCommand, false);
+                this.TratarCommandCanExecute(BuscarCommand, false);
+            }
         }
     }
 }

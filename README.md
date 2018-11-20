@@ -11,7 +11,7 @@ Praticar um pouco de Xamarin para não enferrujar XD
 
 #Screenshots
 
-![](/Screenshots/screen1.png)
+![](/screens/screen1.png)
 
 
-![](/Screenshots/screen2.png)
+![](/screens/screen2.png)

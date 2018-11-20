@@ -1,4 +1,6 @@
 ﻿using BuscaCep.Clients;
+using BuscaCep.Cross;
+using BuscaCep.Data.Entidades;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,6 +15,7 @@ namespace BuscaCep.ViewModels
             : base()
         { }
 
+        private Cep _cep;
         private string _cepBusca;
 
         public string CEPBusca
@@ -24,71 +27,23 @@ namespace BuscaCep.ViewModels
                 OnPropertyChanged();
             }
         }
+        
+        public string CEP => _cep?.CEP;
 
-        private string _cep;
+        public string Logradouro => _cep?.Logradouro;
+        public string Bairro=> _cep?.Bairro;
 
-        public string CEP
-        {
-            get => _cep;
-            set
-            {
-                _cep = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private string _logradouro;
-
-        public string Logradouro
-        {
-            get => _logradouro;
-            set
-            {
-                _logradouro = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private string _bairro;
-
-        public string Bairro
-        {
-            get => _bairro;
-            set
-            {
-                _bairro = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private string _localidade;
-
-        public string Localidade
-        {
-            get => _localidade;
-            set
-            {
-                _localidade = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private string _uf;
+        public string Localidade => _cep?.Localidade;
 
         public string UF
         {
-            get => _uf;
-            set
-            {
-                _uf = value;
-                OnPropertyChanged();
-            }
+            get => _cep?.Uf;
         }
 
-        public bool HasCep { get => !string.IsNullOrWhiteSpace(_cep); }
+        public bool HasCep { get => _cep != null; }
 
         private Command _buscarCommand;
-        public Command BuscarCommand => _buscarCommand ?? (_buscarCommand = new Command(async () => await BuscarCommandExecute(), ()=> IsNotBusy));
+        public Command BuscarCommand => _buscarCommand ?? (_buscarCommand = new Command(async () => await BuscarCommandExecute(), () => IsNotBusy));
 
         async Task BuscarCommandExecute()
         {
@@ -102,7 +57,8 @@ namespace BuscaCep.ViewModels
 
                 BuscaCepResult consulta = await Clients.ViaCepHttpClient.Current.BuscarCep(_cepBusca);
 
-                this.AtribuirValores(consulta);
+                this._cep = this.ConverterParaCep(consulta);
+                this.TratarOnPropertyChange();
             }
             catch (Exception ex)
             {
@@ -115,25 +71,37 @@ namespace BuscaCep.ViewModels
             }
         }
 
+        private void TratarOnPropertyChange()
+        {
+            this.OnPropertyChanged(nameof(this.Bairro));
+            this.OnPropertyChanged(nameof(this.CEP));
+            this.OnPropertyChanged(nameof(this.HasCep));
+            this.OnPropertyChanged(nameof(this.Localidade));
+            this.OnPropertyChanged(nameof(this.Logradouro));
+            this.OnPropertyChanged(nameof(this.UF));
+        }
+
+        private Cep ConverterParaCep(BuscaCepResult consulta)
+        {
+            return new Cep()
+            {
+                Id = Guid.NewGuid(),
+                Bairro = consulta.bairro,
+                CEP = consulta.cep,
+                Complemento = consulta.complemento,
+                Gia = consulta.gia,
+                Ibge = consulta.ibge,
+                Localidade = consulta.localidade,
+                Logradouro = consulta.logradouro,
+                Uf = consulta.uf,
+                Unidade = consulta.gia
+            };
+        }
+
         private void TratarCommandCanExecute(Command command, bool isBusy)
         {
             IsBusy = isBusy;
             command.ChangeCanExecute();
-        }
-
-        private void AtribuirValores(BuscaCepResult consulta)
-        {
-            this.CEP = consulta.cep;
-
-            if (this.HasCep)
-            {
-                this.Bairro = consulta.bairro;
-                this.Localidade = consulta.localidade;
-                this.Logradouro = consulta.logradouro;
-                this.UF = consulta.uf;
-            }
-
-            OnPropertyChanged(nameof(HasCep));
         }
 
         private Command _adicionarCommand;
@@ -150,7 +118,9 @@ namespace BuscaCep.ViewModels
                 this.TratarCommandCanExecute(AdicionarCommand, true);
                 this.TratarCommandCanExecute(BuscarCommand, true);
 
-                MessagingCenter.Send(this, "ADICIONAR CEP");
+                Data.DatabaseService.Current.Salvar(_cep);
+
+                MessagingCenter.Send(this, MessageKeys.CepsAtualizados);
 
                 await base.PopAsync();
             }

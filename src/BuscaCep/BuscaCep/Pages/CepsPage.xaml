@@ -14,7 +14,7 @@
     <!--Built in Cells-->
     <ListView.ItemTemplate>
         <DataTemplate>
-            <TextCell Text="{Binding .}" />
+                <TextCell Text="{Binding CEP}" />
         </DataTemplate>
     </ListView.ItemTemplate>
     
